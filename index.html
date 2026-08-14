@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI &amp; Automation Assessment</title>
+<meta name="description" content="Timed assessment covering RAG, LLMs, NLP, AI vs traditional systems, Codex, and n8n.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<!-- AOS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.css" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================= START SCREEN ============================= -->
+<section id="screen-start" class="screen">
+  <div class="start-wrap">
+    <div class="start-card" data-aos="fade-up">
+      <span class="eyebrow">Assessment · 6 Topics</span>
+      <h1 class="font-display" style="font-size:clamp(1.9rem,4.4vw,2.8rem); font-weight:600; margin:.7rem 0 .5rem; line-height:1.15;">
+        AI &amp; Automation<br>Knowledge Assessment
+      </h1>
+      <p style="color:var(--ivory-dim); max-width:52ch; font-size:1.02rem;">
+        A timed check on what was covered in class — retrieval-augmented generation, language models,
+        natural language processing, how AI differs from traditional rule-based systems, OpenAI Codex,
+        and building automations in n8n.
+      </p>
+
+      <div class="start-topics">
+        <span class="topic-chip">RAG</span>
+        <span class="topic-chip">LLM</span>
+        <span class="topic-chip">NLP</span>
+        <span class="topic-chip">AI vs Traditional Systems</span>
+        <span class="topic-chip">OpenAI Codex</span>
+        <span class="topic-chip">n8n</span>
+      </div>
+
+      <div class="start-meta">
+        <div class="meta-box">
+          <div class="num" id="stat-qcount">30</div>
+          <div class="lbl">Questions</div>
+        </div>
+        <div class="meta-box">
+          <div class="num">20:00</div>
+          <div class="lbl">Time Limit</div>
+        </div>
+        <div class="meta-box">
+          <div class="num">MCQ + Written</div>
+          <div class="lbl">Question Types</div>
+        </div>
+      </div>
+
+      <label class="field-label" for="student-name">Your name (optional)</label>
+      <input type="text" id="student-name" class="input-classy" placeholder="e.g. Ismail N" style="margin-bottom:1.5rem;">
+
+      <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+        <button id="start-btn" type="button" class="btn-gold">Begin Assessment →</button>
+        <span style="font-size:.82rem; color:var(--muted);">You can move between questions freely and revisit earlier ones before submitting.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= QUIZ SCREEN ============================= -->
+<section id="screen-quiz" class="screen">
+  <header class="quiz-header">
+    <div class="quiz-header-inner">
+      <div class="brandmark"><span class="dot"></span> AI &amp; Automation Assessment</div>
+      <div style="display:flex; align-items:center; gap:1.1rem;">
+        <span class="progress-pill" id="progress-pill">Question 1 of 30</span>
+        <div class="timer-ring-wrap">
+          <div class="timer-ring" id="timer-ring" style="--pct:100"><span id="timer-text">20:00</span></div>
+          <div class="timer-caption">
+            <b>Time left</b>
+            <small>Auto-submits at 0:00</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="quiz-body">
+    <aside class="palette-panel">
+      <div class="palette-title">Question Map</div>
+      <div class="palette-grid" id="palette-grid"></div>
+      <div class="palette-legend">
+        <div class="legend-row"><span class="legend-dot current"></span> Current question</div>
+        <div class="legend-row"><span class="legend-dot answered"></span> Answered</div>
+        <div class="legend-row"><span class="legend-dot unanswered"></span> Not yet answered</div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="question-card" id="question-card"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.25rem;">
+        <button type="button" class="btn-ghost" id="prev-btn">← Previous</button>
+        <div style="display:flex; gap:.75rem;">
+          <button type="button" class="btn-gold" id="next-btn">Next →</button>
+          <button type="button" class="btn-gold" id="submit-btn">Submit Assessment</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ============================= RESULT SCREEN ============================= -->
+<section id="screen-result" class="screen">
+  <div class="result-wrap" id="result-body"></div>
+</section>
+
+<!-- ============================= CONFIRM SUBMIT MODAL ============================= -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-md); color:var(--ivory);">
+      <div class="modal-body" style="padding:1.75rem;">
+        <h5 class="font-display" style="font-weight:600; margin-bottom:.6rem;">Submit your assessment?</h5>
+        <p id="confirm-unanswered-line" style="color:var(--ivory-dim); font-size:.94rem;"></p>
+        <p style="color:var(--muted); font-size:.85rem;">Once submitted, the timer stops and you'll see your score immediately. This cannot be undone.</p>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--line); padding:1rem 1.75rem;">
+        <button type="button" class="btn-ghost" data-bs-dismiss="modal">Keep Working</button>
+        <button type="button" class="btn-gold" id="confirm-submit-btn">Submit Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
